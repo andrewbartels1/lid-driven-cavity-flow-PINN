@@ -1,0 +1,16 @@
+\babel@toc {english}{}\relax 
+\contentsline {figure}{\numberline {1}{\ignorespaces A picture of CFD model \blx@tocontentsinit {0}\cite {ANSYS.com}\relax }}{1}{figure.caption.3}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Open Lidded Cavity Flow Free Body Diagram \blx@tocontentsinit {0}\cite {NVIDIA}\relax }}{2}{figure.caption.4}%
+\contentsline {figure}{\numberline {3}{\ignorespaces A picture of CFD model complexity versus reality\relax }}{3}{figure.caption.5}%
+\contentsline {figure}{\numberline {4}{\ignorespaces A picture of PINN spectrum from Nvidia $Modulus^{\copyright }$ \blx@tocontentsinit {0}\cite {NVIDIA}\relax }}{3}{figure.caption.6}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Navier-Stokes Explained\blx@tocontentsinit {0}\cite {sim_world_2014} \relax }}{5}{figure.caption.7}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Streamlines ($\psi $)\relax }}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {7}{\ignorespaces U Velocity $Re = 400$\relax }}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {8}{\ignorespaces V Velocity $Re = 400$\relax }}{9}{figure.caption.9}%
+\contentsline {figure}{\numberline {9}{\ignorespaces Streamlines ($\psi $)\relax }}{9}{figure.caption.10}%
+\contentsline {figure}{\numberline {10}{\ignorespaces U Velocity $Re = 1500$\relax }}{9}{figure.caption.10}%
+\contentsline {figure}{\numberline {11}{\ignorespaces V Velocity $Re = 1500$\relax }}{9}{figure.caption.10}%
+\contentsline {figure}{\numberline {12}{\ignorespaces Original U (FlowPy)\relax }}{10}{figure.caption.11}%
+\contentsline {figure}{\numberline {13}{\ignorespaces predicted U at $Re = 400$\relax }}{10}{figure.caption.11}%
+\contentsline {figure}{\numberline {14}{\ignorespaces U minus U predicted\relax }}{10}{figure.caption.11}%
+\contentsline {figure}{\numberline {15}{\ignorespaces "pressure" (i.e. model weights)\relax }}{10}{figure.caption.12}%
