@@ -186,8 +186,6 @@ def GetStarredVelocities(space, fluid):
     space.u_star = u_star.copy()
     space.v_star = v_star.copy()
 
-# @nb.njit(fastmath=True)
-
 
 def SolvePressurePoisson(space, fluid, left, right, top, bottom):
     #Save object attributes as local variable with explicit typing for improved readability
@@ -224,7 +222,6 @@ def SolvePressurePoisson(space, fluid, left, right, top, bottom):
             tol *= 10
 
 
-# @nb.njit(fastmath=True)
 def SolveMomentumEquation(space, fluid):
     #Save object attributes as local variable with explicit typing for improved readability
     rows = int(space.rowpts)

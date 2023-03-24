@@ -1,0 +1,12 @@
+# ABO (Amazon)
+#https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-images-original.tar
+#https://amazon-berkeley-objects.s3.amazonaws.com/archives/abo-3dmodels.tar
+
+# ShapeNet
+#http://shapenet.cs.stanford.edu/shapenet/obj-zip/ShapeNetCore.v2.zip
+
+# Pix3D
+#http://pix3d.csail.mit.edu/data/pix3d_full.zip
+# R2N2 dataset
+http://cvgl.stanford.edu/data2/ShapeNetRendering.tgz
+http://cvgl.stanford.edu/data2/ShapeNetVox32.tgz

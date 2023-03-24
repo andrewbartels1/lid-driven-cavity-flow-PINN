@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "lid-driven-cavity-flow-pinn"
+version = "0.1.0"
+description = "lid driven cavity flow physics informed neural network"
+authors = ["andrewbartels1 <andrewbartels1@gmail.com>"]
+license = "GNU AGPL"
+readme = "README.md"
+packages = [{include = "src/lid_driven_cavity_flow_pinn"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.24.2"
+torch = "^2.0.0"
+pydantic = "^1.10.7"
+pydantic-cli = "^4.3.0"
+imageio = "^2.26.1"
+Pillow = "^9.4.0"
+seaborn = "^0.12.2"
+matplotlib = "^3.7.1"
+tqdm = "^4.65.0"
+xarray = "^2023.3.0"
+plotly = "^5.13.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.1.0"
+pytest-cov = "^4.0.0"
+pytest-html = "^3.2.0"
+pytest-timeout = "^2.1.0"
+pytest = "^7.2.2"
+torchvision = "^0.15.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
