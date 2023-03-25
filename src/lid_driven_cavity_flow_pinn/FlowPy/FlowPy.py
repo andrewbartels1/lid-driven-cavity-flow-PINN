@@ -6,7 +6,7 @@ Created on Fri Jul  6 23:20:56 2018
 """
 
 import numpy as np
-import numba as nb
+# import numba as nb
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import os

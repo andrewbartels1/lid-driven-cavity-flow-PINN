@@ -20,6 +20,8 @@ matplotlib = "^3.7.1"
 tqdm = "^4.65.0"
 xarray = "^2023.3.0"
 plotly = "^5.13.1"
+scikit-image = "^0.20.0"
+scikit-learn = "^1.2.2"
 
 
 [tool.poetry.group.dev.dependencies]
