@@ -73,7 +73,23 @@ class LiddedDataset(Dataset):
         return sample
 
     # get indexes for train and test rows
-    def get_splits(self, n_test=0.2):
+    def get_splits(self, n_test=0.2, random=False):
+        """
+        This function can randomly or orderdly (either lower/upper Reynolds number)
+        generate the test train split along with the amount of data to hold out for test
+
+        Parameters
+        ----------
+        n_test : float, optional
+            _description_, by default 0.2
+        random : bool, optional
+            _description_, by default False
+
+        Returns
+        -------
+        _type_
+            _description_
+        """
         # determine sizes
         test_size = round(n_test * len(self.dataCatalog))
         train_size = len(self.dataCatalog) - test_size

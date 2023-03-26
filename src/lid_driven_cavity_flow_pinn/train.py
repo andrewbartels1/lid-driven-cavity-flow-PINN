@@ -24,6 +24,11 @@ from utils import navier_calc, navier_mse, save_model, load_model
 
 # # train the model
 start_time = t.time()
+
+# TODO: Tasks pending completion -@bartelsaa at 3/25/2023, 7:02:48 PM
+# Stub in the correct way to do this here: 
+# https://github.com/jayroxis/PINNs/blob/master/Burgers%20Equation/Burgers%20Identification%20(PyTorch).ipynb
+
 def train_model(train_dl, model, max_epochs, device, layers,
                 optimizer: str = Literal["Adam", "SGD", "LBFGS"],
                 save_state: bool=True,
