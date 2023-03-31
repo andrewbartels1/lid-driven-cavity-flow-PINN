@@ -44,7 +44,8 @@
 
 	\begin{tabular}{l p{5cm}}
 		\textbf{Team Member Names:} Andrew Bartels & \\[10pt]
-		\textbf{Project Title:}                      \\ Lid Driven Cavity Flow: \\
+		\textbf{Project Title:}                      \\ Lid Driven
+		Cavity Flow:                                 \\
 		A Physics Informed Neural Network Approach vs.
 		Traditional Statistical Models             & \\[10pt]
 
@@ -108,12 +109,13 @@ always guaranteed. Conversely, in CFD, data is often measured in terms of
 gigabytes to petabytes, so sifting through this data for meaning or trying to
 feed more than a few examples to a neural network can be extremely prohibitive
 (time and cost)~\cite{DBLP:journals/corr/abs-1711-10566} This leads to the
-introduction of physics informed neural networks (PINNs) \cite{PINN_History} .
+introduction of physics informed neural networks (PINNs)\cite{PINN_History}.
 This is where the loss function of the optimization is substituted for a part
 of physics (in this study, the continuity equation), in order for the model to
 adhere to physics better. This has led to models that adhere to physics
 applications much better with less data, converge to a solution faster, and put
-``guard rails`` on models that attempt to predict vastly different phenomena that
+``guard rails'' on models that attempt to predict vastly different phenomena
+that
 might be practical~\cite{DBLP:journals/corr/abs-1711-10561, raissi2018deepVIV}
 
 \pagebreak
@@ -254,7 +256,8 @@ variables in the problem, the x, y, and z spatial coordinates of some domain
 and the time t.\cite{NASA} They are second-order nonlinear partial differential
 equations, and in multiple simplified forms have known analytical solutions.
 \textit{\textbf{In other words, the N-S equations describe (fully) how the
-		velocity, pressure, temperature, and density of a moving fluid are related.}}
+		velocity, pressure, temperature, and density of a moving fluid
+		are related.}}
 An analytical solution of the full form would win someone a million dollars
 from the
 \href{https://www.claymath.org/millennium-problems/navier%E2%80%93stokes-equationURL}{Millenium prize series}. \\
@@ -293,7 +296,8 @@ the convective form) will be presented:
 
 This is the most concise full form (no assumptions) of the N-S equation,
 and the differential form with assumptions will be seen in the Methodology
-	[\ref{methodology}] section. In general terms, the continuity equation is a
+	[\ref{methodology}] section. In general terms, the continuity equation
+is a
 time-dependent way to account for the conservation of mass (back to Newton's
 laws of physics) such that no mass is created or destroyed in the area of
 observation these equations are being applied. The Momentum equations are
@@ -307,10 +311,10 @@ equation.
 	\caption{Navier-Stokes Explained\cite{sim_world_2014} }
 \end{figure}
 
-It is worth noting the "Convective Term" is simply a physical process that
+It is worth noting the ``Convective Term'' is simply a physical process that
 occurs in a flow of gas in which some property is transported by the ordered
 motion of the flow.\cite{NASA}
-Additionally, the "velocity diffusion" term is a physical process that
+Additionally, the ``velocity diffusion'' term is a physical process that
 occurs in a flow of gas in which some property is transported by the random
 motion of the molecules of the gas. Diffusion is related to the stress tensor
 and to the viscosity of the gas. Turbulence, and the generation of boundary
@@ -322,9 +326,9 @@ equations. There are actually some other equation that are required to solve
 this system. We only show five equations for six unknowns. An equation of state
 relates the pressure, temperature, and density of the gas. And we need to
 specify all of the terms of the stress tensor. In CFD the stress tensor terms
-are often approximated by a turbulence model. \cite{NASA}
+are often approximated by a turbulence model.\cite{NASA}
 
-\section{Methodology\cite{Barba2019}}\label{methodology}
+\section{Methodology\cite{Barba2019}} \label{methodology}
 
 This study will implement the Cavity Flow with Navier–Stokes problem
 using a system of three differential equations. The first two equations are for
@@ -347,16 +351,21 @@ problem:\\
 
 \begin{align*}
 	\frac{\partial u}{\partial t}+u\frac{\partial u}{\partial
-		x}+v\frac{\partial u}{\partial y} = -\frac{1}{\rho}\frac{\partial p}{\partial
-		x}+\nu \left(\frac{\partial^2 u}{\partial x^2}+\frac{\partial^2 u}{\partial
+		x}+v\frac{\partial u}{\partial y} =
+	-\frac{1}{\rho}\frac{\partial p}{\partial
+		x}+\nu \left(\frac{\partial^2 u}{\partial x^2}+\frac{\partial^2
+		u}{\partial
 	y^2} \right) \\
 	\frac{\partial v}{\partial t}+u\frac{\partial v}{\partial
-		x}+v\frac{\partial v}{\partial y} = -\frac{1}{\rho}\frac{\partial p}{\partial
-		y}+\nu\left(\frac{\partial^2 v}{\partial x^2}+\frac{\partial^2 v}{\partial
+		x}+v\frac{\partial v}{\partial y} =
+	-\frac{1}{\rho}\frac{\partial p}{\partial
+		y}+\nu\left(\frac{\partial^2 v}{\partial x^2}+\frac{\partial^2
+		v}{\partial
 	y^2}\right)  \\
 	\frac{\partial^2 p}{\partial x^2}+\frac{\partial^2 p}{\partial y^2} =
 	-\rho\left(\frac{\partial u}{\partial x}\frac{\partial u}{\partial
-		x}+2\frac{\partial u}{\partial y}\frac{\partial v}{\partial x}+\frac{\partial
+		x}+2\frac{\partial u}{\partial y}\frac{\partial v}{\partial
+		x}+\frac{\partial
 		v}{\partial y}\frac{\partial v}{\partial y} \right)
 \end{align*}
 
@@ -370,7 +379,8 @@ problem:\\
 	x}+v_{i,j}^{n}\frac{u_{i,j}^{n}-u_{i,j-1}^{n}}{\Delta y} = \\
 	\qquad -\frac{1}{\rho}\frac{p_{i+1,j}^{n}-p_{i-1,j}^{n}}{2\Delta x}+\nu
 	\left(\frac{u_{i+1,j}^{n}-2u_{i,j}^{n}+u_{i-1,j}^{n}}{\Delta
-		x^2}+\frac{u_{i,j+1}^{n}-2u_{i,j}^{n}+u_{i,j-1}^{n}}{\Delta y^2}\right)
+		x^2}+\frac{u_{i,j+1}^{n}-2u_{i,j}^{n}+u_{i,j-1}^{n}}{\Delta
+		y^2}\right)
 \end{multline}
 
 \noindent Discretization of the $v$-momentum equation:
@@ -381,7 +391,8 @@ problem:\\
 	x}+v_{i,j}^{n}\frac{v_{i,j}^{n}-v_{i,j-1}^{n}}{\Delta y} = \\
 	\qquad -\frac{1}{\rho}\frac{p_{i,j+1}^{n}-p_{i,j-1}^{n}}{2\Delta y}
 	+\nu\left(\frac{v_{i+1,j}^{n}-2v_{i,j}^{n}+v_{i-1,j}^{n}}{\Delta
-		x^2}+\frac{v_{i,j+1}^{n}-2v_{i,j}^{n}+v_{i,j-1}^{n}}{\Delta y^2}\right)
+		x^2}+\frac{v_{i,j+1}^{n}-2v_{i,j}^{n}+v_{i,j-1}^{n}}{\Delta
+		y^2}\right)
 \end{multline}
 
 \noindent Discretization of the pressure-Poisson equation:
@@ -389,15 +400,16 @@ problem:\\
 \begin{equation}
 	\begin{aligned}
 		\frac{p_{i+1,j}^{n}-2p_{i,j}^{n}+p_{i-1,j}^{n}}{\Delta
-		x^2}+\frac{p_{i,j+1}^{n}-2p_{i,j}^{n}+p_{i,j-1}^{n}}{\Delta y^2} & =                                     \\
-		                                                                 & \qquad \rho \biggr[ \frac{1}{\Delta
+		x^2}+\frac{p_{i,j+1}^{n}-2p_{i,j}^{n}+p_{i,j-1}^{n}}{\Delta
+		y^2} & = \\
+		     & \qquad \rho \biggr[ \frac{1}{\Delta
 			t}\left(\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta
-		x}+\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\right)                                                          \\
-		                                                                 & -\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta
-		x}\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}                                                                  \\
-		                                                                 & - 2\frac{u_{i,j+1}-u_{i,j-1}}{2\Delta
-		y}\frac{v_{i+1,j}-v_{i-1,j}}{2\Delta x}                                                                  \\
-		                                                                 & - \frac{v_{i,j+1}-v_{i,j-1}}{2\Delta
+			x}+\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\right) \\
+		    & -\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta
+		x}\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}	\\
+		& - 2\frac{u_{i,j+1}-u_{i,j-1}}{2\Delta
+		y}\frac{v_{i+1,j}-v_{i-1,j}}{2\Delta x} \\
+		& - \frac{v_{i,j+1}-v_{i,j-1}}{2\Delta
 		y}\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y} \biggr]
 	\end{aligned}
 \end{equation}
@@ -409,15 +421,22 @@ how iterations will proceed in the code.\\
 
 \begin{equation}
 	\begin{aligned}
-		u_{i,j}^{n+1} & =                                                   \\
-		              & u_{i,j}^{n} - u_{i,j}^{n} \frac{\Delta t}{\Delta x}
-		\left(u_{i,j}^{n}-u_{i-1,j}^{n}\right) - v_{i,j}^{n} \frac{\Delta t}{\Delta y}
-		\left(u_{i,j}^{n}-u_{i,j-1}^{n}\right)                              \\
+		u_{i,j}^{n+1} & =
+		\\
+		              & u_{i,j}^{n} - u_{i,j}^{n} \frac{\Delta
+			t}{\Delta x}
+		\left(u_{i,j}^{n}-u_{i-1,j}^{n}\right) - v_{i,j}^{n}
+		\frac{\Delta t}{\Delta y}
+		\left(u_{i,j}^{n}-u_{i,j-1}^{n}\right)
+		\\
 		              & - \frac{\Delta t}{\rho 2\Delta x}
-		\left(p_{i+1,j}^{n}-p_{i-1,j}^{n}\right)                            \\
+		\left(p_{i+1,j}^{n}-p_{i-1,j}^{n}\right)
+		\\
 		              & + \nu \left(\frac{\Delta t}{\Delta x^2}
-		\left(u_{i+1,j}^{n}-2u_{i,j}^{n}+u_{i-1,j}^{n}\right) + \frac{\Delta t}{\Delta
-				y^2} \left(u_{i,j+1}^{n}-2u_{i,j}^{n}+u_{i,j-1}^{n}\right)\right)
+		\left(u_{i+1,j}^{n}-2u_{i,j}^{n}+u_{i-1,j}^{n}\right) +
+		\frac{\Delta t}{\Delta
+				y^2}
+		\left(u_{i,j+1}^{n}-2u_{i,j}^{n}+u_{i,j-1}^{n}\right)\right)
 	\end{aligned}
 \end{equation}
 
@@ -425,15 +444,22 @@ how iterations will proceed in the code.\\
 
 \begin{equation}
 	\begin{aligned}
-		v_{i,j}^{n+1} & =                                                   \\
-		              & v_{i,j}^{n} - u_{i,j}^{n} \frac{\Delta t}{\Delta x}
-		\left(v_{i,j}^{n}-v_{i-1,j}^{n}\right) - v_{i,j}^{n} \frac{\Delta t}{\Delta y}
-		\left(v_{i,j}^{n}-v_{i,j-1}^{n})\right)                             \\
+		v_{i,j}^{n+1} & =
+		\\
+		              & v_{i,j}^{n} - u_{i,j}^{n} \frac{\Delta
+			t}{\Delta x}
+		\left(v_{i,j}^{n}-v_{i-1,j}^{n}\right) - v_{i,j}^{n}
+		\frac{\Delta t}{\Delta y}
+		\left(v_{i,j}^{n}-v_{i,j-1}^{n})\right)
+		\\
 		              & - \frac{\Delta t}{\rho 2\Delta y}
-		\left(p_{i,j+1}^{n}-p_{i,j-1}^{n}\right)                            \\
+		\left(p_{i,j+1}^{n}-p_{i,j-1}^{n}\right)
+		\\
 		              & + \nu \left(\frac{\Delta t}{\Delta x^2}
-		\left(v_{i+1,j}^{n}-2v_{i,j}^{n}+v_{i-1,j}^{n}\right) + \frac{\Delta t}{\Delta
-				y^2} \left(v_{i,j+1}^{n}-2v_{i,j}^{n}+v_{i,j-1}^{n}\right)\right)
+		\left(v_{i+1,j}^{n}-2v_{i,j}^{n}+v_{i-1,j}^{n}\right) +
+		\frac{\Delta t}{\Delta
+				y^2}
+		\left(v_{i,j+1}^{n}-2v_{i,j}^{n}+v_{i,j-1}^{n}\right)\right)
 	\end{aligned}
 \end{equation}
 
@@ -441,16 +467,24 @@ how iterations will proceed in the code.\\
 
 \begin{equation}
 	\begin{aligned}
-		p_{i,j}^{n} & =                                                                        \\
-		            & \frac{\left(p_{i+1,j}^{n}+p_{i-1,j}^{n}\right) \Delta y^2 +
-			\left(p_{i,j+1}^{n}+p_{i,j-1}^{n}\right) \Delta x^2}{2\left(\Delta x^2+\Delta
-		y^2\right)}                                                                            \\
-		            & -\frac{\rho\Delta x^2\Delta y^2}{2\left(\Delta x^2+\Delta y^2\right)}    \\
-		            & \times \biggr[\frac{1}{\Delta t}\left(\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta
+		p_{i,j}^{n} & =
+		\\
+		            & \frac{\left(p_{i+1,j}^{n}+p_{i-1,j}^{n}\right)
+			\Delta y^2 +
+			\left(p_{i,j+1}^{n}+p_{i,j-1}^{n}\right) \Delta
+			x^2}{2\left(\Delta x^2+\Delta
+			y^2\right)}
+		\\
+		            & -\frac{\rho\Delta x^2\Delta y^2}{2\left(\Delta
+		x^2+\Delta y^2\right)}                                       \\
+		            & \times \biggr[\frac{1}{\Delta
+			t}\left(\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta
 			x}+\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\right)
-		-\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}            \\
+		-\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta
+		x}\frac{u_{i+1,j}-u_{i-1,j}}{2\Delta x}                      \\
 		            & - 2\frac{u_{i,j+1}-u_{i,j-1}}{2\Delta
-		y}\frac{v_{i+1,j}-v_{i-1,j}}{2\Delta x}- \frac{v_{i,j+1}-v_{i,j-1}}{2\Delta
+		y}\frac{v_{i+1,j}-v_{i-1,j}}{2\Delta x}-
+		\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta
 		y}\frac{v_{i,j+1}-v_{i,j-1}}{2\Delta y}\biggr]
 	\end{aligned}
 \end{equation}
@@ -463,7 +497,7 @@ how iterations will proceed in the code.\\
 	\\
 	The boundary conditions will be:
 	\begin{itemize}
-		\item $u=1$ at $y=2$ (the "lid");
+		\item $u=1$ at $y=2$ (the ``lid'');
 		\item $u, v=0$ on the other boundaries;
 		\item $\frac{\partial p}{\partial y}=0$ at $y=0$;
 		\item $p=0$ at $y=2$
@@ -602,7 +636,8 @@ mean squared error loss is now defined as:
 
 \noindent Lastly, the network used was just a simple array of fully
 connected layers with the input being [batch size x 4 x grid
-		size\textsuperscript{2}] where for this study a grid of 151x151 in the x and y
+		size\textsuperscript{2}] where for this study a grid of 151x151
+in the x and y
 direction was used for the truthly data of the
 \textit{\underline{\href{https://github.com/gauravsdeshmukh/FlowPy}{FlowPy} }}
 python model. This python code for computing the traditional lid driven cavity
@@ -621,74 +656,99 @@ robust model to. \\
 		torch.Size({[}2, 22801, 4{]})}
 		\\ \hline
 		\multicolumn{1}{|l|}{Layer (type)}           &
-		\multicolumn{1}{l|}{Output Shape}            & \multicolumn{1}{l|}{Param \#} \\
+		\multicolumn{1}{l|}{Output Shape}            &
+		\multicolumn{1}{l|}{Param \#}                  \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-1}               &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{100}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{100}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-2}                 &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-3}               &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-4}                 &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-5}               &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-6}                 &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-7}               &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-8}                 &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-9}               &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-10}                &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-11}              &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-12}                &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-13}              &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-14}                &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-15}              &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{420}      \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{420}                       \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-16}                &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 20{]}}  &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l|}{Linear-17}              &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 3{]}}   & \multicolumn{1}{l|}{63}       \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 3{]}}   &
+		\multicolumn{1}{l|}{63}                        \\
 		\hline
 		\multicolumn{1}{|l|}{Tanh-18}                &
-		\multicolumn{1}{l|}{{[}-1, 2, 22801, 3{]}}   & \multicolumn{1}{l|}{0}        \\
+		\multicolumn{1}{l|}{{[}-1, 2, 22801, 3{]}}   &
+		\multicolumn{1}{l|}{0}                         \\
 		\hline
 		\multicolumn{1}{|l}{Total params: 3,103}     &
-		                                             & \multicolumn{1}{l|}{}         \\
+		                                             &
+		\multicolumn{1}{l|}{}                          \\
 		\multicolumn{1}{|l}{Trainable params: 3,103} &
-		                                             & \multicolumn{1}{l|}{}         \\
+		                                             &
+		\multicolumn{1}{l|}{}                          \\
 		\multicolumn{1}{|l}{Non-trainable params: 0} &
-		                                             & \multicolumn{1}{l|}{}         \\ \hline
+		                                             &
+		\multicolumn{1}{l|}{}                          \\ \hline
 		Input size (MB): 0.70                        &
-		                                             &                               \\
+		                                             &
+		\\
 		Forward/backward pass size (MB): 113.42      &
-		                                             &                               \\
+		                                             &
+		\\
 		Params size (MB): 0.01                       &
-		                                             &                               \\
+		                                             &
+		\\
 		Estimated Total Size (MB): 114.13            &
 		                                             &
 	\end{tabular}
@@ -711,8 +771,10 @@ these results should be seen as the "worst" a model of this size could produce,
 and again, is partially trained. \\
 
 \noindent \textit{The total validation MSE is 975,651,365.54 for a more
-	converged model, and 1,084,119,800.14 with a lesser converged model for 944
-	samples the model did not see before.} This seems ridiculously high, and anyone
+	converged model, and 1,084,119,800.14 with a lesser converged model for
+	944
+	samples the model did not see before.} This seems ridiculously high,
+and anyone
 would conclude from a metric standpoint the model isn't converged, or didn't
 learn anything at all! However since this model is generated to produce a
 truth-like replication of physics, the visual interpretation will provide much
@@ -772,14 +834,19 @@ are the features most noteworthy:
 
 \begin{itemize}
 	\item Bottom left and right corners of
-	      \autoref{fig:pres_example1} and \autoref{fig:pres_example2} have smaller
-	      vortices, where the higher Reynolds number's bottom left corner is slightly
+	      \autoref{fig:pres_example1} and \autoref{fig:pres_example2} have
+	      smaller
+	      vortices, where the higher Reynolds number's bottom left corner
+	      is slightly
 	      more developed.
 	\item Lower speed zones (darkest blue regions) in
-	      \autoref{fig:u_example1} and  \autoref{fig:u_example2} move lower with respect
-	      to y the higher the speed of the fluid. This is due to a more energetic flow.
+	      \autoref{fig:u_example1} and  \autoref{fig:u_example2} move lower
+	      with respect
+	      to y the higher the speed of the fluid. This is due to a more
+	      energetic flow.
 	\item V velocity high and low speed regions on the left and
-	      right of \autoref{fig:v_example1} and \autoref{fig:v_example2} have different
+	      right of \autoref{fig:v_example1} and \autoref{fig:v_example2}
+	      have different
 	      shapes and sizes.
 \end{itemize}
 
