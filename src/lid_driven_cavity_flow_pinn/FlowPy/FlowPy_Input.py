@@ -20,7 +20,7 @@ from FlowPy import *
 # length, breadth = 1, 1
 # length, breadth = 2,2
 # length, breadth = 3,3
-starting_Reynolds = 20 # this inviscid code doesn't converge well at low Re
+starting_Reynolds = 3 # this inviscid code doesn't converge well at low Re
 ending_Reynolds = 25
 # wrapped in loop
 # CAUTION: This takes 20-30 minutes to run in it's current configuration

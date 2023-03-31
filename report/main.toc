@@ -1,9 +1,0 @@
-\babel@toc {english}{}\relax 
-\contentsline {section}{\numberline {1}Problem Statement}{1}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Problem Setup}{2}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Computational Fluids Overview}{2}{subsection.1.2}%
-\contentsline {subsection}{\numberline {1.3}Physics Informed Neural Networks (PINNs) Overview}{3}{subsection.1.3}%
-\contentsline {section}{\numberline {2}Theory Overview}{4}{section.2}%
-\contentsline {section}{\numberline {3}Methodology\blx@tocontentsinit {0}\cite {Barba2019}}{4}{section.3}%
-\contentsline {subsection}{\numberline {3.1}PINN Optimization \& Neural Network Layout}{7}{subsection.3.1}%
-\contentsline {section}{\numberline {4}Evaluation and Final Results}{8}{section.4}%
