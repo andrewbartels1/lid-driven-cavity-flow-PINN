@@ -92,7 +92,10 @@ def read_datafile(filepath: str) -> tuple[np.array, np.array, np.array, np.array
 
     return p_p, u_p, v_p, time, Re
 
-
+def get_boundary_samples(array:np.array) -> np.array:
+    """Gets all of the Boundary Conditions of an Array to sample"""
+    return np.concatenate([array[0,:-1], array[:-1,-1], array[-1,::-1], array[-2:0:-1,0]])
+    
 def get_Reynolds_from_filename(filepath: str) -> int:
     """
     Gets the Reynolds from filename alone.
@@ -153,7 +156,7 @@ def get_data_files(folder_path: str = "../data/", file_ending: str = '.mat') -> 
 
 def generate_csv_catalog(filename: str = 'catalog.csv',
                          dataDir: str = "../data/",
-                         file_ending: str = '.txt') -> bool:
+                         file_ending: str = '.txt') -> pd.DataFrame:
     """Generate catalog.csv for Dataset/DataLoader in pytorch.
     
     Always run this from the `src` directory to get everything to work properly
@@ -225,7 +228,7 @@ def generate_csv_catalog(filename: str = 'catalog.csv',
 
     print(df.head(), f"\n number of files cataloged: {len(df)}\n")
     
-    return True
+    return df
 
 
 # =============================================================================

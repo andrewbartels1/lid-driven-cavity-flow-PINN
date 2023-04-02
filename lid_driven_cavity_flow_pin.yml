@@ -8,4 +8,4 @@ dependencies:
     - jupyter
     # - cudatoolkit
     - pip
-    - poetry
+    # - poetry
