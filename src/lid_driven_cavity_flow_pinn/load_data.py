@@ -42,13 +42,15 @@ class LiddedDataset(Dataset):
 
         #  make the x-grid and y-grid linear array that matches up with the
         #  flattened ones above
-        x_grid_flattened = np.tile(np.linspace(
-            0, Re/100, self.dataCatalog.xsize[idx]),
-            self.dataCatalog.xsize[idx])
+        x_grid_flattened = np.tile(
+            np.linspace(0, Re / 100, self.dataCatalog.xsize[idx]),
+            self.dataCatalog.xsize[idx],
+        )
 
-        y_grid_flattened = np.tile(np.linspace(
-            0, Re/100, self.dataCatalog.ysize[idx]),
-            self.dataCatalog.ysize[idx])
+        y_grid_flattened = np.tile(
+            np.linspace(0, Re / 100, self.dataCatalog.ysize[idx]),
+            self.dataCatalog.ysize[idx],
+        )
 
         # store the inputs and outputs
         # input in to model: x_grid, y_grid, timestep, u_correction,
@@ -59,16 +61,22 @@ class LiddedDataset(Dataset):
         #                        Re later)
         #
         #
-        input_array = np.vstack([x_grid_flattened,
-                                 y_grid_flattened,
-                                 time.flatten(), 
-                                 np.repeat(Re, x_grid_flattened.shape)])
+        input_array = np.vstack(
+            [
+                x_grid_flattened,
+                y_grid_flattened,
+                time.flatten(),
+                np.repeat(Re, x_grid_flattened.shape),
+            ]
+        )
 
         uvp_output = np.vstack([u_p.flatten(), v_p.flatten(), p_p.flatten()])
 
         # ensure target has the right shape
-        sample = {'input_array': torch.from_numpy(input_array.T), 
-            'UVP_answer': torch.from_numpy(uvp_output.T)}
+        sample = {
+            "input_array": torch.from_numpy(input_array.T),
+            "UVP_answer": torch.from_numpy(uvp_output.T),
+        }
 
         return sample
 
@@ -96,18 +104,22 @@ class LiddedDataset(Dataset):
         # calculate the split
         return random_split(self, [train_size, test_size])
 
+
 # prepare the dataset
 
 
-def prepare_data(path: str,
-                 num_workers: int = 0,
-                 test_train_split: int = 0.2,
-                 train_batch_size: int = 128,
-                 test_batch_size: int = 128) -> tuple[torch.utils.data.dataloader.DataLoader,
-                                                      torch.utils.data.dataloader.DataLoader]:
+def prepare_data(
+    path: str,
+    num_workers: int = 0,
+    test_train_split: int = 0.2,
+    train_batch_size: int = 128,
+    test_batch_size: int = 128,
+) -> tuple[
+    torch.utils.data.dataloader.DataLoader, torch.utils.data.dataloader.DataLoader
+]:
     """
     Function to prepare the data into test, train outputting the dataloader
-    
+
     Credit: https://machinelearningmastery.com/pytorch-tutorial-develop-deep-learning-models/
 
     Parameters
@@ -131,8 +143,10 @@ def prepare_data(path: str,
     train, test = dataset.get_splits(test_train_split)
 
     # prepare data loaders
-    train_dl = DataLoader(train, batch_size=train_batch_size,
-                          shuffle=True, num_workers=num_workers)
-    test_dl = DataLoader(test, batch_size=test_batch_size,
-                         shuffle=False, num_workers=num_workers)
+    train_dl = DataLoader(
+        train, batch_size=train_batch_size, shuffle=True, num_workers=num_workers
+    )
+    test_dl = DataLoader(
+        test, batch_size=test_batch_size, shuffle=False, num_workers=num_workers
+    )
     return train_dl, test_dl

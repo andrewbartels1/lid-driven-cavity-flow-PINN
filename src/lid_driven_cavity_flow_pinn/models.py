@@ -28,6 +28,7 @@ from torch.nn.init import xavier_uniform_
 import torch.nn as nn
 import torch.nn.functional as F
 import time as t
+
 # for autodifferentiation (the special sauce)
 
 import torch
@@ -52,8 +53,9 @@ class BoxFlowNet(nn.Module):
             self.layers.append(nn.Linear(input_size, size))
             input_size = size  # For the next layer
             if activation is not None:
-                assert isinstance(activation, Module), \
-                    "Each tuples should contain a size (int) and a torch.nn.modules.Module."
+                assert isinstance(
+                    activation, Module
+                ), "Each tuples should contain a size (int) and a torch.nn.modules.Module."
                 self.layers.append(activation)
 
     def forward(self, input_data):
@@ -71,19 +73,19 @@ class CNN(Module):
         super(CNN, self).__init__()
         # input to first hidden layer
         self.hidden1 = Conv2d(n_channels, 32, (3, 3))
-        kaiming_uniform_(self.hidden1.weight, nonlinearity='relu')
+        kaiming_uniform_(self.hidden1.weight, nonlinearity="relu")
         self.act1 = ReLU()
         # first pooling layer
         self.pool1 = MaxPool2d((2, 2), stride=(2, 2))
         # second hidden layer
         self.hidden2 = Conv2d(32, 32, (3, 3))
-        kaiming_uniform_(self.hidden2.weight, nonlinearity='relu')
+        kaiming_uniform_(self.hidden2.weight, nonlinearity="relu")
         self.act2 = ReLU()
         # second pooling layer
         self.pool2 = MaxPool2d((2, 2), stride=(2, 2))
         # fully connected layer
-        self.hidden3 = Linear(5*5*32, 100)
-        kaiming_uniform_(self.hidden3.weight, nonlinearity='relu')
+        self.hidden3 = Linear(5 * 5 * 32, 100)
+        kaiming_uniform_(self.hidden3.weight, nonlinearity="relu")
         self.act3 = ReLU()
         # output layer
         self.hidden4 = Linear(100, 10)
@@ -101,7 +103,7 @@ class CNN(Module):
         X = self.act2(X)
         X = self.pool2(X)
         # flatten
-        X = X.view(-1, 4*4*50)
+        X = X.view(-1, 4 * 4 * 50)
         # third hidden layer
         X = self.hidden3(X)
         X = self.act3(X)
@@ -109,6 +111,7 @@ class CNN(Module):
         X = self.hidden4(X)
         X = self.act4(X)
         return X
+
 
 # model definition
 
@@ -140,7 +143,8 @@ class BoxFlowNet_MLP(Module):
         # third hidden layer and output
         X = self.hidden3(X)
         return X
-        
+
+
 # =============================================================================
 # Write these tomorrow
 # =============================================================================
