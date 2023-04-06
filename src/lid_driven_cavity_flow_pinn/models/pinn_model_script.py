@@ -68,9 +68,11 @@ class Pinn(nn.Module):
 
     def __init__(self, hidden_dims: List[int]):
         super().__init__()
+        self.rho =torch.Tensor([1]).to(device)
+        self.mu = torch.Tensor([0.01]).to(device)
         self.hidden_dims = hidden_dims
         self.ffn_layers = []
-        input_dim = 5
+        input_dim = 3
         for hidden_dim in hidden_dims:
             self.ffn_layers.append(nn.Linear(input_dim, hidden_dim))
             self.ffn_layers.append(nn.Tanh())
@@ -104,37 +106,24 @@ class Pinn(nn.Module):
         inputs: t, u, v
         labels: Re? (p,u,v) is original
         """
-        inputs = torch.stack([x, y, t, u, v], dim=1)
+
+        inputs = torch.stack([t, u, v], dim=1)
         hidden_output = self.ffn(inputs)
         psi = hidden_output[:, 0]
-        p_pred = hidden_output[:, 0]
-        u_pred = calc_grad(psi, y)
-        v_pred = -calc_grad(psi, x)
+        # p_pred = hidden_output[:, 0]
+        u_pred = calc_grad(psi, u)
+        # v_pred = -calc_grad(psi, v)
 
         # preds = torch.stack([p_pred, u_pred, v_pred], dim=1)
-        preds = u_pred
+        preds = self.rho*torch.sum(u_pred)/self.mu
        
-        loss = self.loss_fn(u, v, u_pred, v_pred)
+    
         
         return {
             "preds": preds,
-            "loss": loss,
-            "label": Re
+            "label": torch.Tensor(Re[0]).to(device)
         }
     
-    def loss_fn(self, u, v, u_pred, v_pred):
-        """
-        u: (b, 1)
-        v: (b, 1)
-        p: (b, 1)
-        """
-        loss = (
-            F.mse_loss(u, u_pred, reduction="sum")
-            + F.mse_loss(v, v_pred, reduction="sum")
-
-        )
-        return loss
-
 # %%
 torch.random.manual_seed(0)
 random.seed(0)
@@ -223,13 +212,13 @@ class Trainer:
         # since we are trying to predict a categorical Re, use cross entropy to guide the loss function
         criterion = nn.CrossEntropyLoss()
         
-        sampler = RandomSampler(
-            train_data,
-            replacement=True,
-            num_samples=self.samples_per_ep,
-        )
+        # sampler = RandomSampler(
+        #     train_data,
+        #     replacement=True,
+        #     num_samples=self.samples_per_ep,
+        # )
         train_loader = DataLoader(
-            train_data, batch_size=self.batch_size, sampler=sampler
+            train_data, batch_size=self.batch_size
         )
 
         print("====== Training ======")
@@ -262,10 +251,9 @@ class Trainer:
 
                 # Forward
                 outputs = model(**inputs)
-                
+                print("this is outputs", outputs)
                 # Re categorical prediction
-                loss_cross_ent = criterion(outputs['preds'], outputs["label"])
-                loss = outputs["loss"] + loss_cross_ent # original loss computation
+                loss = criterion(outputs['preds'], outputs["label"])
 
                 # Backward
                 loss.backward()
@@ -343,8 +331,8 @@ class Trainer:
 # #### Call the Trainer
 
 # %%
-batch_size = 2560
-trainer = Trainer(model, batch_size=batch_size, num_epochs=10000, samples_per_ep=batch_size*2*2)
+batch_size = 64
+trainer = Trainer(model, batch_size=batch_size, num_epochs=10000, samples_per_ep=batch_size*2*2*2*2*2)
 trainer.train(train_data)
 
 # %%
