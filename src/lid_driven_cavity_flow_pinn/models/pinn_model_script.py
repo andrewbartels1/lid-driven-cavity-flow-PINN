@@ -17,7 +17,7 @@ import json
 
 # %%
 from torch.utils.data import Dataset
-from lid_driven_cavity_flow_pinn.models.utils import make_text_data_fits_it_sits, dump_json
+from utils import make_text_data_fits_it_sits, dump_json
 
 class PinnDataset(Dataset):
     def __init__(self, data: List[List[float]]):
@@ -80,9 +80,6 @@ class Pinn(nn.Module):
         )  # 2)) # 1 for the Re prediction number
         self.ffn = nn.Sequential(*self.ffn_layers)
 
-        self.lambda1 = nn.Parameter(torch.tensor(0.0))
-        self.lambda2 = nn.Parameter(torch.tensor(0.0))
-
         self.init_weights()
 
     def init_weights(self):
@@ -114,57 +111,18 @@ class Pinn(nn.Module):
         u_pred = calc_grad(psi, y)
         v_pred = -calc_grad(psi, x)
 
-        preds = torch.stack([p_pred, u_pred, v_pred], dim=1)
-        u_t = calc_grad(u_pred, t)
-        u_x = calc_grad(u_pred, x)
-        u_y = calc_grad(u_pred, y)
-        u_xx = calc_grad(u_x, x)
-        u_yy = calc_grad(u_y, y)
-
-        v_t = calc_grad(v_pred, t)
-        v_x = calc_grad(v_pred, x)
-        v_y = calc_grad(v_pred, y)
-        v_xx = calc_grad(v_x, x)
-        v_yy = calc_grad(v_y, y)
-
-        p_x = calc_grad(p_pred, x)
-        p_y = calc_grad(p_pred, y)
-
-        f_u = (
-            u_t
-            + self.lambda1 * (u_pred * u_x + v_pred * u_y)
-            + p_x
-            - self.lambda2 * (u_xx + u_yy)
-        )
-        f_v = (
-            v_t
-            + self.lambda1 * (u_pred * v_x + v_pred * v_y)
-            + p_y
-            - self.lambda2 * (v_xx + v_yy)
-        )
-        loss = self.loss_fn(u, v, u_pred, v_pred, f_u, f_v)
+        # preds = torch.stack([p_pred, u_pred, v_pred], dim=1)
+        preds = u_pred
+       
+        loss = self.loss_fn(u, v, u_pred, v_pred)
         
         return {
             "preds": preds,
             "loss": loss,
             "label": Re
         }
-
-    # def Re_loss_fn(self, u, v, u_pred, v_pred, f_u_pred, f_v_pred):
-    #     """
-    #     u: (b, 1)
-    #     v: (b, 1)
-    #     p: (b, 1)
-    #     """
-    #     loss = (
-    #         F.mse_loss(u, u_pred, reduction="sum")
-    #         + F.mse_loss(v, v_pred, reduction="sum")
-    #         + F.mse_loss(f_u_pred, torch.zeros_like(f_u_pred), reduction="sum")
-    #         + F.mse_loss(f_v_pred, torch.zeros_like(f_v_pred), reduction="sum")
-    #     )
-    #     return loss
     
-    def loss_fn(self, u, v, u_pred, v_pred, f_u_pred, f_v_pred):
+    def loss_fn(self, u, v, u_pred, v_pred):
         """
         u: (b, 1)
         v: (b, 1)
@@ -173,8 +131,7 @@ class Pinn(nn.Module):
         loss = (
             F.mse_loss(u, u_pred, reduction="sum")
             + F.mse_loss(v, v_pred, reduction="sum")
-            + F.mse_loss(f_u_pred, torch.zeros_like(f_u_pred), reduction="sum")
-            + F.mse_loss(f_v_pred, torch.zeros_like(f_v_pred), reduction="sum")
+
         )
         return loss
 
@@ -189,7 +146,7 @@ hidden_dims = [20] * 8
 model = Pinn(hidden_dims=hidden_dims)
 num_params = sum(p.numel() for p in model.parameters())
 print(f"Number of parameters: {num_params}")
-data_path = Path("./data/PINN_input_data.json") # run this fro
+data_path = Path("./data/PINN_input_data.json")
 # Data
 train_data, test_data = get_dataset(data_path.as_posix())
 
@@ -210,9 +167,10 @@ class Trainer:
         self,
         model: Pinn,
         output_dir: Path = None,
-        lr: float = 0.0008,
-        num_epochs: int = 40,
+        lr: float = 0.001,
+        num_epochs: int = 100,
         batch_size: int = 256,
+        samples_per_ep: int = 256
     ):
         self.model = model
 
@@ -223,7 +181,7 @@ class Trainer:
         self.num_epochs = num_epochs
         self.batch_size = batch_size
         self.log_interval = 1
-        self.samples_per_ep = 128
+        self.samples_per_ep = samples_per_ep
 
         if output_dir is None:
             self.output_dir = Path(
@@ -298,25 +256,26 @@ class Trainer:
         while ep < self.num_epochs:
             print(f"====== Epoch {ep} ======")
             for step, batch in enumerate(train_loader):
-                print("step: ", step)
                 
                 inputs = {k: t.to(device) for k, t in batch.items()}
-                inputs["Re"] = inputs["Re"].type(torch.LongTensor).to(device)
+                inputs["Re"] = inputs["Re"].type(torch.FloatTensor).to(device)
 
                 # Forward
                 outputs = model(**inputs)
                 
                 # Re categorical prediction
-                loss = criterion(outputs['preds'], outputs["label"])
-                # loss = outputs["loss"] # original loss computation
-                self.loss_history.append(loss.item())
+                loss_cross_ent = criterion(outputs['preds'], outputs["label"])
+                loss = outputs["loss"] + loss_cross_ent # original loss computation
 
                 # Backward
                 loss.backward()
                 self.optimizer.step()
                 self.optimizer.zero_grad()
 
-                if step % self.log_interval == 0:
+
+                self.loss_history.append(loss.item())
+
+                if step % 1 == 0:
                     print(
                         {
                             "step": step,
@@ -324,8 +283,6 @@ class Trainer:
                             "lr": round(
                                 self.optimizer.param_groups[0]["lr"], 4
                             ),
-                            "lambda1": round(self.model.lambda1.item(), 4),
-                            "lambda2": round(self.model.lambda2.item(), 4),
                             "time": round(time() - train_start_time, 1),
                         }
                     )
@@ -386,13 +343,9 @@ class Trainer:
 # #### Call the Trainer
 
 # %%
-trainer = Trainer(model, batch_size=256, num_epochs=100)
+batch_size = 2560
+trainer = Trainer(model, batch_size=batch_size, num_epochs=10000, samples_per_ep=batch_size*2*2)
 trainer.train(train_data)
-
-# %%
-lambda1 = trainer.model.lambda1.item()
-lambda2 = trainer.model.lambda2.item()
-print(lambda1, lambda2)
 
 # %%
 outputs = trainer.predict(test_data)
@@ -404,25 +357,18 @@ print("preds:")
 print(preds)
 
 # %%
-test_arr = np.array(test_data.data)
-p = test_arr[:, 3]
-u = test_arr[:, 4]
-v = test_arr[:, 5]
-p_pred = preds[:, 0]
-u_pred = preds[:, 1]
-v_pred = preds[:, 2]
+# test_arr = np.array(test_data.data)
+# # p = test_arr[:, 3]
+# u = test_arr[:, 4]
+# # v = test_arr[:, 5]
+# p_pred = preds[:, 0]
 
-# Error
-err_u = np.linalg.norm(u - u_pred, 2) / np.linalg.norm(u, 2)
-err_v = np.linalg.norm(v - v_pred, 2) / np.linalg.norm(v, 2)
-err_p = np.linalg.norm(p - p_pred, 2) / np.linalg.norm(p, 2)
+# # Error
+# err_u = np.linalg.norm(u - u_pred, 2) / np.linalg.norm(u, 2)
 
-err_lambda1 = np.abs(lambda1 - 1.0)
-err_lambda2 = np.abs(lambda2 - 0.01) / 0.01
-
-print(f"Error in velocity: {err_u:.2e}, {err_v:.2e}")
-print(f"Error in pressure: {err_p:.2e}")
-print(f"Error in lambda 1: {err_lambda1:.2f}")
-print(f"Error in lambda 2: {err_lambda2:.2f}")
+# print(f"Error in velocity: {err_u:.2e}, {err_v:.2e}")
+# print(f"Error in pressure: {err_p:.2e}")
+# print(f"Error in lambda 1: {err_lambda1:.2f}")
+# print(f"Error in lambda 2: {err_lambda2:.2f}")
 
 

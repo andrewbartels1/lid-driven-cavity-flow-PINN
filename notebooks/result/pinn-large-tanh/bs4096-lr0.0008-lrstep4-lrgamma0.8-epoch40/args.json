@@ -1,1 +1,0 @@
-{"lr": 0.0008, "lr_step": 4, "lr_gamma": 0.8, "num_epochs": 40, "batch_size": 4096}

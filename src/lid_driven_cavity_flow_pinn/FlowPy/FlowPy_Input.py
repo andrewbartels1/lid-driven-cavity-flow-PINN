@@ -21,7 +21,7 @@ from FlowPy import *
 # length, breadth = 2,2
 # length, breadth = 3,3
 starting_Reynolds = 3  # this inviscid code doesn't converge well at low Re
-ending_Reynolds = 25
+ending_Reynolds = 20
 # wrapped in loop
 # CAUTION: This takes 20-30 minutes to run in it's current configuration
 # you can put the resolution down, but this can cause divergence issues!
@@ -36,7 +36,7 @@ for i in range(starting_Reynolds, ending_Reynolds):
     interval = 100  # Record values in file per interval number of iterations
     plot_flag = 0  # Keep 1 to plot results at the end
     dir_path = (
-        "./data/"  # to get this to run properly, python FlowPy-master/FlowPy_Input.py
+        "../../data/"  # to get this to run properly, python FlowPy-master/FlowPy_Input.py
     )
     ###########################DEFINE PHYSICAL PARAMETERS##########################
     rho = 1
