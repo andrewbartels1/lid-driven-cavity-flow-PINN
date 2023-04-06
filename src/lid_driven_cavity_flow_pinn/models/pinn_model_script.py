@@ -115,14 +115,16 @@ class Pinn(nn.Module):
         # v_pred = -calc_grad(psi, v)
 
         # preds = torch.stack([p_pred, u_pred, v_pred], dim=1)
-        preds = self.rho*torch.sum(u_pred)/self.mu
+        preds = self.rho*u_pred/self.mu
        
     
         
         return {
             "preds": preds,
-            "label": torch.Tensor(Re[0]).to(device)
+            "label": Re
         }
+        
+        
     
 # %%
 torch.random.manual_seed(0)
@@ -251,7 +253,7 @@ class Trainer:
 
                 # Forward
                 outputs = model(**inputs)
-                print("this is outputs", outputs)
+                
                 # Re categorical prediction
                 loss = criterion(outputs['preds'], outputs["label"])
 
