@@ -1,10 +1,10 @@
-
 # %%
 from pathlib import Path
 from time import time
 from torch.utils.data import RandomSampler, DataLoader
 from typing import List, Tuple
 import random
+
 # %%
 # https://github.com/donny-chan/pinn-torch/blob/5edcd6834a8fddc91db2e9adba958b0b403fd31f/model.py
 from typing import List
@@ -18,6 +18,7 @@ import json
 # %%
 from torch.utils.data import Dataset
 from utils import make_text_data_fits_it_sits, dump_json
+
 
 class PinnDataset(Dataset):
     def __init__(self, data: List[List[float]]):
@@ -49,6 +50,7 @@ def get_dataset(data_path: Path) -> Tuple[PinnDataset, PinnDataset]:
     test_data = PinnDataset(test_data)
     return train_data, test_data
 
+
 def calc_grad(y, x) -> Tensor:
     grad = autograd.grad(
         outputs=y,
@@ -68,7 +70,7 @@ class Pinn(nn.Module):
 
     def __init__(self, hidden_dims: List[int]):
         super().__init__()
-        self.rho =torch.Tensor([1]).to(device)
+        self.rho = torch.Tensor([1]).to(device)
         self.mu = torch.Tensor([0.01]).to(device)
         self.hidden_dims = hidden_dims
         self.ffn_layers = []
@@ -98,7 +100,7 @@ class Pinn(nn.Module):
         p: Tensor = None,
         u: Tensor = None,
         v: Tensor = None,
-        Re: Tensor = None
+        Re: Tensor = None,
     ):
         """
         All shapes are (b,)
@@ -115,17 +117,11 @@ class Pinn(nn.Module):
         # v_pred = -calc_grad(psi, v)
 
         # preds = torch.stack([p_pred, u_pred, v_pred], dim=1)
-        preds = self.rho*u_pred/self.mu
-       
-    
-        
-        return {
-            "preds": preds,
-            "label": Re
-        }
-        
-        
-    
+        preds = self.rho * u_pred / self.mu
+
+        return {"preds": preds, "label": Re}
+
+
 # %%
 torch.random.manual_seed(0)
 random.seed(0)
@@ -141,14 +137,22 @@ data_path = Path("./data/PINN_input_data.json")
 # Data
 train_data, test_data = get_dataset(data_path.as_posix())
 
-give_me_my_memory_back = ["P_list", "U_list", "V_list", "time_list", "dataset", "data_ready_to_write"]
+give_me_my_memory_back = [
+    "P_list",
+    "U_list",
+    "V_list",
+    "time_list",
+    "dataset",
+    "data_ready_to_write",
+]
 # free up some memory
 for var in give_me_my_memory_back:
-    globals().pop(var, None);
+    globals().pop(var, None)
 # next(iter(train_data))
 
 # %% [markdown]
 # ### Training Class
+
 
 # %%
 class Trainer:
@@ -161,7 +165,7 @@ class Trainer:
         lr: float = 0.001,
         num_epochs: int = 100,
         batch_size: int = 256,
-        samples_per_ep: int = 256
+        samples_per_ep: int = 256,
     ):
         self.model = model
 
@@ -213,15 +217,13 @@ class Trainer:
 
         # since we are trying to predict a categorical Re, use cross entropy to guide the loss function
         criterion = nn.CrossEntropyLoss()
-        
-        # sampler = RandomSampler(
-        #     train_data,
-        #     replacement=True,
-        #     num_samples=self.samples_per_ep,
-        # )
-        train_loader = DataLoader(
-            train_data, batch_size=self.batch_size
+
+        sampler = RandomSampler(
+            train_data,
+            replacement=True,
+            num_samples=self.samples_per_ep,
         )
+        train_loader = DataLoader(train_data, batch_size=self.batch_size, sampler=sampler)
 
         print("====== Training ======")
         print(f'device is "{device}"')
@@ -247,21 +249,19 @@ class Trainer:
         while ep < self.num_epochs:
             print(f"====== Epoch {ep} ======")
             for step, batch in enumerate(train_loader):
-                
                 inputs = {k: t.to(device) for k, t in batch.items()}
                 inputs["Re"] = inputs["Re"].type(torch.FloatTensor).to(device)
 
                 # Forward
                 outputs = model(**inputs)
-                
+
                 # Re categorical prediction
-                loss = criterion(outputs['preds'], outputs["label"])
+                loss = criterion(outputs["preds"], outputs["label"])
 
                 # Backward
                 loss.backward()
                 self.optimizer.step()
                 self.optimizer.zero_grad()
-
 
                 self.loss_history.append(loss.item())
 
@@ -270,9 +270,7 @@ class Trainer:
                         {
                             "step": step,
                             "loss": round(loss.item(), 6),
-                            "lr": round(
-                                self.optimizer.param_groups[0]["lr"], 4
-                            ),
+                            "lr": round(self.optimizer.param_groups[0]["lr"], 4),
                             "time": round(time() - train_start_time, 1),
                         }
                     )
@@ -329,12 +327,18 @@ class Trainer:
             "preds": all_preds,
         }
 
+
 # %% [markdown]
 # #### Call the Trainer
 
 # %%
 batch_size = 64
-trainer = Trainer(model, batch_size=batch_size, num_epochs=10000, samples_per_ep=batch_size*2*2*2*2*2)
+trainer = Trainer(
+    model,
+    batch_size=batch_size,
+    num_epochs=10000,
+    samples_per_ep=batch_size * 2 * 2 * 2 * 2 * 2,
+)
 trainer.train(train_data)
 
 # %%
@@ -360,5 +364,3 @@ print(preds)
 # print(f"Error in pressure: {err_p:.2e}")
 # print(f"Error in lambda 1: {err_lambda1:.2f}")
 # print(f"Error in lambda 2: {err_lambda2:.2f}")
-
-

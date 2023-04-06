@@ -29,15 +29,30 @@ def make_text_data_fits_it_sits(
     for time_step in zip(
         P_boundary_list, U_boundary_list, V_boundary_list, shortened_time_list, Re_list
     ):
-        
-        P, U, V, time, Re = time_step # unpack quick
-        
+        P, U, V, time, Re = time_step  # unpack quick
+
         # setup the x & y
-        x, y  = list(range(0,len(P))), list(range(0,len(P)))
-        for x_single, y_single, time_single, P_single, U_single, V_single, Re_single,  in zip(
-            x, y, time, P, U, V, Re
-        ):
-            output_list.append([x_single, y_single, time_single, P_single, U_single, V_single, Re_single])
+        x, y = list(range(0, len(P))), list(range(0, len(P)))
+        for (
+            x_single,
+            y_single,
+            time_single,
+            P_single,
+            U_single,
+            V_single,
+            Re_single,
+        ) in zip(x, y, time, P, U, V, Re):
+            output_list.append(
+                [
+                    x_single,
+                    y_single,
+                    time_single,
+                    P_single,
+                    U_single,
+                    V_single,
+                    Re_single,
+                ]
+            )
 
     return output_list
 

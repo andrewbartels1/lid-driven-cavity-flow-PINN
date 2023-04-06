@@ -1,23 +1,23 @@
 
 # %%
+import json
+import random
 from pathlib import Path
 from time import time
-from torch.utils.data import RandomSampler, DataLoader
-from typing import List, Tuple
-import random
 # %%
 # https://github.com/donny-chan/pinn-torch/blob/5edcd6834a8fddc91db2e9adba958b0b403fd31f/model.py
-from typing import List
+from typing import List, Tuple
 
+import numpy as np
 import torch
-from torch import nn, autograd, Tensor
+from torch import Tensor, autograd, nn
 from torch.nn import functional as F
-
-import json
-
 # %%
-from torch.utils.data import Dataset
-from utils import make_text_data_fits_it_sits, dump_json
+from torch.utils.data import DataLoader, Dataset, RandomSampler
+
+from lid_driven_cavity_flow_pinn.models.utils import (
+    dump_json, make_text_data_fits_it_sits)
+
 
 class PinnDataset(Dataset):
     def __init__(self, data: List[List[float]]):
@@ -257,7 +257,18 @@ class Trainer:
         device = self.device
 
         # since we are trying to predict a categorical Re, use cross entropy to guide the loss function
-        criterion = nn.CrossEntropyLoss()
+        # criterion = nn.CrossEntropyLoss()
+        
+        # optimizer = torch.optim.LBFGS(
+        #     self.dnn.parameters(), 
+        #     lr=1.0, 
+        #     max_iter=50000, 
+        #     max_eval=50000, 
+        #     history_size=50,
+        #     tolerance_grad=1e-5, 
+        #     tolerance_change=1.0 * np.finfo(float).eps,
+        #     line_search_fn="strong_wolfe"       # can be "strong_wolfe"
+        # )
         
         sampler = RandomSampler(
             train_data,
