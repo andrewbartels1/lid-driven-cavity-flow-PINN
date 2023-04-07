@@ -1,10 +1,10 @@
-
 # %%
 from pathlib import Path
 from time import time
 from torch.utils.data import RandomSampler, DataLoader
 from typing import List, Tuple
 import random
+
 # %%
 # https://github.com/donny-chan/pinn-torch/blob/5edcd6834a8fddc91db2e9adba958b0b403fd31f/model.py
 from typing import List
@@ -18,6 +18,7 @@ import json
 # %%
 from torch.utils.data import Dataset
 from utils import make_text_data_fits_it_sits, dump_json
+
 
 class PinnDataset(Dataset):
     def __init__(self, data: List[List[float]]):
@@ -48,6 +49,7 @@ def get_dataset(data_path: Path) -> Tuple[PinnDataset, PinnDataset]:
     train_data = PinnDataset(train_data)
     test_data = PinnDataset(test_data)
     return train_data, test_data
+
 
 def calc_grad(y, x) -> Tensor:
     grad = autograd.grad(
@@ -99,7 +101,7 @@ class Pinn(nn.Module):
         p: Tensor = None,
         u: Tensor = None,
         v: Tensor = None,
-        Re: Tensor = None
+        Re: Tensor = None,
     ):
         """
         All shapes are (b,)
@@ -143,12 +145,8 @@ class Pinn(nn.Module):
             - self.lambda2 * (v_xx + v_yy)
         )
         loss = self.loss_fn(u, v, u_pred, v_pred, f_u, f_v)
-        
-        return {
-            "preds": preds,
-            "loss": loss,
-            "label": Re
-        }
+
+        return {"preds": preds, "loss": loss, "label": Re}
 
     # def Re_loss_fn(self, u, v, u_pred, v_pred, f_u_pred, f_v_pred):
     #     """
@@ -163,7 +161,7 @@ class Pinn(nn.Module):
     #         + F.mse_loss(f_v_pred, torch.zeros_like(f_v_pred), reduction="sum")
     #     )
     #     return loss
-    
+
     def loss_fn(self, u, v, u_pred, v_pred, f_u_pred, f_v_pred):
         """
         u: (b, 1)
@@ -177,6 +175,7 @@ class Pinn(nn.Module):
             + F.mse_loss(f_v_pred, torch.zeros_like(f_v_pred), reduction="sum")
         )
         return loss
+
 
 # %%
 torch.random.manual_seed(0)
@@ -193,14 +192,22 @@ data_path = Path("../data/PINN_input_data.json")
 # Data
 train_data, test_data = get_dataset(data_path.as_posix())
 
-give_me_my_memory_back = ["P_list", "U_list", "V_list", "time_list", "dataset", "data_ready_to_write"]
+give_me_my_memory_back = [
+    "P_list",
+    "U_list",
+    "V_list",
+    "time_list",
+    "dataset",
+    "data_ready_to_write",
+]
 # free up some memory
 for var in give_me_my_memory_back:
-    globals().pop(var, None);
+    globals().pop(var, None)
 # next(iter(train_data))
 
 # %% [markdown]
 # ### Training Class
+
 
 # %%
 class Trainer:
@@ -264,7 +271,7 @@ class Trainer:
 
         # since we are trying to predict a categorical Re, use cross entropy to guide the loss function
         criterion = nn.CrossEntropyLoss()
-        
+
         sampler = RandomSampler(
             train_data,
             replacement=True,
@@ -299,15 +306,15 @@ class Trainer:
             print(f"====== Epoch {ep} ======")
             for step, batch in enumerate(train_loader):
                 print("step: ", step)
-                
+
                 inputs = {k: t.to(device) for k, t in batch.items()}
                 inputs["Re"] = inputs["Re"].type(torch.LongTensor).to(device)
 
                 # Forward
                 outputs = model(**inputs)
-                
+
                 # Re categorical prediction
-                loss = criterion(outputs['preds'], outputs["label"])
+                loss = criterion(outputs["preds"], outputs["label"])
                 # loss = outputs["loss"] # original loss computation
                 self.loss_history.append(loss.item())
 
@@ -321,9 +328,7 @@ class Trainer:
                         {
                             "step": step,
                             "loss": round(loss.item(), 6),
-                            "lr": round(
-                                self.optimizer.param_groups[0]["lr"], 4
-                            ),
+                            "lr": round(self.optimizer.param_groups[0]["lr"], 4),
                             "lambda1": round(self.model.lambda1.item(), 4),
                             "lambda2": round(self.model.lambda2.item(), 4),
                             "time": round(time() - train_start_time, 1),
@@ -382,6 +387,7 @@ class Trainer:
             "preds": all_preds,
         }
 
+
 # %% [markdown]
 # #### Call the Trainer
 
@@ -424,5 +430,3 @@ print(f"Error in velocity: {err_u:.2e}, {err_v:.2e}")
 print(f"Error in pressure: {err_p:.2e}")
 print(f"Error in lambda 1: {err_lambda1:.2f}")
 print(f"Error in lambda 2: {err_lambda2:.2f}")
-
-

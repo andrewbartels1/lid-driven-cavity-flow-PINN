@@ -35,9 +35,7 @@ for i in range(starting_Reynolds, ending_Reynolds):
     file_flag = 1  # Keep 1 to print results to file
     interval = 100  # Record values in file per interval number of iterations
     plot_flag = 0  # Keep 1 to plot results at the end
-    dir_path = (
-        "../../data/"  # to get this to run properly, python FlowPy-master/FlowPy_Input.py
-    )
+    dir_path = "../../data/"  # to get this to run properly, python FlowPy-master/FlowPy_Input.py
     ###########################DEFINE PHYSICAL PARAMETERS##########################
     rho = 1
     mu = 0.01

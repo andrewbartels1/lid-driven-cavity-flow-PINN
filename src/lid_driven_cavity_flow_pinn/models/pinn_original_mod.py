@@ -182,7 +182,7 @@ hidden_dims = [20] * 8
 model = Pinn(hidden_dims=hidden_dims)
 num_params = sum(p.numel() for p in model.parameters())
 print(f"Number of parameters: {num_params}")
-data_path = Path("./data/PINN_input_data.json")
+data_path = Path("./data/PINN_input_data_last_10_all_Re.json")
 # Data
 train_data, test_data = get_dataset(data_path.as_posix())
 
@@ -221,7 +221,7 @@ class Trainer:
 
         if output_dir is None:
             self.output_dir = Path(
-                "result-razzi-torch",
+                "result-only-ending-sim-mod-razzi",
                 "pinn-large-tanh",
                 f"bs{batch_size}"
                 f"-lr{lr}"
